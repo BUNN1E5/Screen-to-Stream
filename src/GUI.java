@@ -110,6 +110,7 @@ public class GUI {
 						break;
 					if(udp.sendData(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())))
 						System.out.println("sentData");
+					frame.toFront();
 				}
 			}
 		}, "Server Thread").start();
@@ -117,9 +118,6 @@ public class GUI {
 	
 	public void watchButtonAction()
 	{
-		cap = new ScreenCap();
-		udp = new UDPManager(5460);
-		udp.addIP("192.168.0.101");
 		new Thread(new Runnable() {
 			
 			@Override
@@ -127,10 +125,17 @@ public class GUI {
 				while(true)
 				{
 					if(!watchButton.isSelected())
+					{
+						System.gc();
 						break;
-					//picture.setIcon(new ImageIcon(udp.recieveData(1073741823)));
+					}
+					cap = new ScreenCap();
+					udp = new UDPManager(5460);
+					udp.addIP("192.168.0.101");
+					picture.setIcon(new ImageIcon(udp.recieveData(214748346)));
+					frame.toFront();
 					//picture.setIcon(new ImageIcon(cap.screenCap(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
-					picture.setIcon(new ImageIcon(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
+					//picture.setIcon(new ImageIcon(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
 				}
 			}
 		}, "Server Thread").start();
