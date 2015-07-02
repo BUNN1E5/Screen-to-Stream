@@ -19,20 +19,20 @@ public class TCPManager {
 		try {
 			socket = new Socket(IP , port);
 			DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
-			stream.writeBytes(sendData + '\n');
+			stream.writeBytes(sendData);
 			socket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
 	public String receiveMessage()
 	{
-		BufferedReader reader;
 		try {
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			socket = new Socket(IP, port);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			socket.close();
 			return reader.readLine();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return "";
 		}
 	}

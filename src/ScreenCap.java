@@ -29,16 +29,23 @@ public class ScreenCap {
 	
 	public byte[] getSendData(Dimension screen)
 	{
+		byte[] returnData;
 		ByteArrayOutputStream sendBaos = new ByteArrayOutputStream ();
 		BufferedImage img = bot.createScreenCapture(new Rectangle(screen));
-		ImageOutputStream stream = new MemoryCacheImageOutputStream(sendBaos);
 		try {
-			ImageIO.write(img, "jpg", stream);
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			ImageIO.write(img, "jpg", sendBaos);
+			sendBaos.flush();
+			returnData = sendBaos.toByteArray();
+			sendBaos.close();
+		} catch (Exception e) {
+			returnData = new byte[]{};
 		}
-		return sendBaos.toByteArray();
+		return returnData;
+	}
+	
+	public BufferedImage screenCap(Dimension screen)
+	{
+		return bot.createScreenCapture(new Rectangle(screen.width, screen.height + 100));
 	}
 	
 	public BufferedImage displayImage(byte[] bytes)

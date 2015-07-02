@@ -1,11 +1,13 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -27,6 +29,7 @@ public class GUI {
 	private JLabel blankSpace;
 	private JLabel blankSpace2;
 	private JPanel streamWindow;
+	private JLabel picture;
 
 	/**
 	 * Launch the application.
@@ -59,7 +62,7 @@ public class GUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setBackground(new Color(0,0,0,0));
-		streamWindow = new JPanel();
+		streamWindow = new JPanel(new GridLayout(1, 1));
 		streamWindow.setBounds(100, 100, 450, 300);
 		streamWindow.setBackground(new Color(0,0,0,0));
 		frame.add(streamWindow);
@@ -71,6 +74,7 @@ public class GUI {
 	{
 		menu = new JMenuBar();
 		menu.setBounds(0, frame.getHeight() - 33 - menu.getSize().height, frame.getWidth(), 20);
+		picture = new JLabel("A");
 		blankSpace = new JLabel(" ");
 		streamButton = new JToggleButton("stream");
 		watchButton = new JToggleButton("watch");
@@ -78,6 +82,7 @@ public class GUI {
 		portInput = new JTextField();
 		blankSpace2 = new JLabel("     ");
 		frame.getContentPane().setLayout(null);
+		streamWindow.add(picture);
 		menu.add(blankSpace);
 		menu.add(streamButton);
 		menu.add(watchButton);
@@ -89,17 +94,20 @@ public class GUI {
 	
 	ScreenCap cap;
 	UDPManager udp;
-	
+	TCPManager tcpManager;
 	public void streamButtonAction()
 	{
-		TCPManager tcpManager = new TCPManager("192.168.0.101", 3480);
+		cap = new ScreenCap();
+		udp = new UDPManager(5460);
+		udp.addIP("192.168.0.101");
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				while(true)
 				{
-					
+					if(streamButton.isSelected());
+						udp.sendData(cap.getSendData(streamWindow.getSize()));
 				}
 			}
 		}, "Server Thread").start();
@@ -107,7 +115,20 @@ public class GUI {
 	
 	public void watchButtonAction()
 	{
-		
+		cap = new ScreenCap();
+		udp = new UDPManager(5460);
+		udp.addIP("192.168.0.101");
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true)
+				{
+					if(streamButton.isSelected())
+						picture.setIcon(new ImageIcon(cap.screenCap(streamWindow.getSize())));
+				}
+			}
+		}, "Server Thread").start();
 	}
 	
 	public void listenerInit()
