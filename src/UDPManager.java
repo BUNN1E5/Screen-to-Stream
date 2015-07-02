@@ -31,7 +31,7 @@ public class UDPManager {
 		adresses.remove(adresses.indexOf(IP));
 	}
 	
-	public void sendData(byte[] data)
+	public boolean sendData(byte[] data)
 	{
 		try { 
 			socket = new DatagramSocket();
@@ -40,7 +40,10 @@ public class UDPManager {
 				DatagramPacket packet = new DatagramPacket(data, data.length, adress, port);
 				socket.send(packet);
 			}
-		} catch (Exception e) {} 
+			return true;
+		} catch (Exception e) {
+			return false;
+		} 
 	}
 	
 	public byte[] recieveData(int bufferSize)
@@ -52,7 +55,7 @@ public class UDPManager {
 			socket.receive(packet);
 			return packet.getData();
 		} catch (Exception e) {
-			return new byte[]{0};
+			return new byte[]{};
 		}
 		
 	}

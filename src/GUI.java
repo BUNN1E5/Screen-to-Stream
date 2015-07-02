@@ -74,7 +74,7 @@ public class GUI {
 	{
 		menu = new JMenuBar();
 		menu.setBounds(0, frame.getHeight() - 33 - menu.getSize().height, frame.getWidth(), 20);
-		picture = new JLabel("A");
+		picture = new JLabel("");
 		blankSpace = new JLabel(" ");
 		streamButton = new JToggleButton("stream");
 		watchButton = new JToggleButton("watch");
@@ -106,8 +106,10 @@ public class GUI {
 			public void run() {
 				while(true)
 				{
-					if(streamButton.isSelected());
-						udp.sendData(cap.getSendData(streamWindow.getSize()));
+					if(!streamButton.isSelected())
+						break;
+					if(udp.sendData(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())))
+						System.out.println("sentData");
 				}
 			}
 		}, "Server Thread").start();
@@ -124,8 +126,11 @@ public class GUI {
 			public void run() {
 				while(true)
 				{
-					if(streamButton.isSelected())
-						picture.setIcon(new ImageIcon(cap.screenCap(streamWindow.getSize())));
+					if(!watchButton.isSelected())
+						break;
+					//picture.setIcon(new ImageIcon(udp.recieveData(1073741823)));
+					//picture.setIcon(new ImageIcon(cap.screenCap(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
+					picture.setIcon(new ImageIcon(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
 				}
 			}
 		}, "Server Thread").start();

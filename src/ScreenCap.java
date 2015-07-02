@@ -1,5 +1,6 @@
 import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
@@ -27,11 +28,11 @@ public class ScreenCap {
 		}
 	}
 	
-	public byte[] getSendData(Dimension screen)
+	public byte[] getSendData(Point location, Dimension screen)
 	{
 		byte[] returnData;
 		ByteArrayOutputStream sendBaos = new ByteArrayOutputStream ();
-		BufferedImage img = bot.createScreenCapture(new Rectangle(screen));
+		BufferedImage img = bot.createScreenCapture(new Rectangle(location.x, location.y, screen.width, screen.height));
 		try {
 			ImageIO.write(img, "jpg", sendBaos);
 			sendBaos.flush();
@@ -43,9 +44,10 @@ public class ScreenCap {
 		return returnData;
 	}
 	
-	public BufferedImage screenCap(Dimension screen)
+	public BufferedImage screenCap(Point location, Dimension screen)
 	{
-		return bot.createScreenCapture(new Rectangle(screen.width, screen.height + 100));
+		BufferedImage img = bot.createScreenCapture(new Rectangle(location.x, location.y, screen.width, screen.height));
+		return img;
 	}
 	
 	public BufferedImage displayImage(byte[] bytes)
@@ -61,5 +63,4 @@ public class ScreenCap {
 		}
 		return bImageFromConvert;
 	}
-	
 }
