@@ -2,5 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/aparapi_dist_windows_x86_64.zip"/>
+	<classpathentry kind="lib" path="lib/aparapi.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-bin.zip"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-test-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4-tests.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

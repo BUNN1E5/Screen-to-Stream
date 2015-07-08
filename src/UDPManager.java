@@ -31,6 +31,7 @@ public class UDPManager {
 		adresses.remove(adresses.indexOf(IP));
 	}
 	
+
 	public boolean sendData(byte[] data)
 	{
 		try { 
@@ -39,6 +40,7 @@ public class UDPManager {
 			{
 				DatagramPacket packet = new DatagramPacket(data, data.length, adress, port);
 				socket.send(packet);
+				//System.out.println("Send Size " + packet.getData().length);
 			}
 			return true;
 		} catch (Exception e) {
@@ -46,13 +48,17 @@ public class UDPManager {
 		} 
 	}
 	
+	int iteration;
 	public byte[] recieveData(int bufferSize)
 	{
 		byte[] data = new byte[bufferSize];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
+		packet.setPort(port);
 		try {
 			socket = new DatagramSocket(port);
 			socket.receive(packet);
+			System.out.println("Iteration: " + iteration);
+			iteration += 1;
 			return packet.getData();
 		} catch (Exception e) {
 			return new byte[]{};

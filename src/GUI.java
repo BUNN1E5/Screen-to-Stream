@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
 
 
 public class GUI {
@@ -65,7 +66,7 @@ public class GUI {
 		streamWindow = new JPanel(new GridLayout(1, 1));
 		streamWindow.setBounds(100, 100, 450, 300);
 		streamWindow.setBackground(new Color(0,0,0,0));
-		frame.add(streamWindow);
+		frame.getContentPane().add(streamWindow);
 		menuInit();
 		listenerInit();
 	}
@@ -75,6 +76,7 @@ public class GUI {
 		menu = new JMenuBar();
 		menu.setBounds(0, frame.getHeight() - 33 - menu.getSize().height, frame.getWidth(), 20);
 		picture = new JLabel("");
+		picture.setHorizontalAlignment(SwingConstants.CENTER);
 		blankSpace = new JLabel(" ");
 		streamButton = new JToggleButton("stream");
 		watchButton = new JToggleButton("watch");
@@ -108,8 +110,7 @@ public class GUI {
 				{
 					if(!streamButton.isSelected())
 						break;
-					if(udp.sendData(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())))
-						System.out.println("sentData");
+					udp.sendData(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()));
 					frame.toFront();
 				}
 			}
@@ -118,6 +119,9 @@ public class GUI {
 	
 	public void watchButtonAction()
 	{
+		cap = new ScreenCap();
+		udp = new UDPManager(5460);
+		udp.addIP("192.168.0.101");
 		new Thread(new Runnable() {
 			
 			@Override
@@ -129,10 +133,8 @@ public class GUI {
 						System.gc();
 						break;
 					}
-					cap = new ScreenCap();
-					udp = new UDPManager(5460);
-					udp.addIP("192.168.0.101");
-					picture.setIcon(new ImageIcon(udp.recieveData(214748346)));
+					//picture.setIcon(new ImageIcon(udp.recieveData(214748346)));
+					picture.setIcon(new ImageIcon(udp.recieveData(63373)));
 					frame.toFront();
 					//picture.setIcon(new ImageIcon(cap.screenCap(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
 					//picture.setIcon(new ImageIcon(cap.getSendData(streamWindow.getLocationOnScreen(), streamWindow.getSize())));
