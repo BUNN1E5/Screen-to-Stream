@@ -42,8 +42,8 @@ public class TCPManager {
 				receiveSocket = new ServerSocket(port);
 			socket = receiveSocket.accept();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			socket.close();
-			return reader.readLine();
+			System.out.println(reader.readLine());
+			return new String(reader.readLine());
 		} catch (Exception e) {
 			return "";
 		}

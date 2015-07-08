@@ -1,9 +1,9 @@
 import java.io.*;
 import java.net.*;
 
-public class GetExternalIP {
+public class IPManager {
 	
-	public static String getIP()
+	public static String getExternalIP()
 	{
 		URL whatismyip;
 		try {

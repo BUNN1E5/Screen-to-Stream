@@ -65,7 +65,7 @@ public class GUI {
 	{
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		frame = new JFrame("Screen To Stream");
-		frame.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
+		//frame.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
 		frame.setAlwaysOnTop(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(100, 100, 450, 300);
@@ -110,7 +110,8 @@ public class GUI {
 	{
 		udp = new UDPManager(Integer.parseInt(portInput.getText()));
 		tcp = new TCPManager(Integer.parseInt(portInput.getText()));
-		udp.addIP("192.168.0.101");
+		//udp.addIP("174.65.14.152");
+		//udp.addIP("174.68.74.90");
 		new Thread(new Runnable() {
 			
 			@Override
@@ -147,7 +148,7 @@ public class GUI {
 			
 			@Override
 			public void run() {
-				
+				tcp.writeMessage(IPManager.getExternalIP());
 				while(true)
 				{
 					if(!watchButton.isSelected())
@@ -155,8 +156,6 @@ public class GUI {
 						System.gc();
 						break;
 					}
-					
-					tcp.writeMessage(GetExternalIP.getIP());
 					BufferedImage image = cap.displayImage(udp.recieveData(350000));
 					frame.setSize(image.getWidth(), image.getHeight() + 33 + menu.getSize().height);
 					picture.setIcon(new ImageIcon(image));
@@ -198,6 +197,7 @@ public class GUI {
 				if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length > 350000)
 				{
 					frame.getRootPane().setWindowDecorationStyle(JRootPane.ERROR_DIALOG);
+					//frame.getRootPane().setWindowDecorationStyle();
 				}
 				else if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length < 350000)
 				{
