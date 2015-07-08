@@ -15,7 +15,9 @@ public class TCPManager {
 		this.IP = IP;
 		try {
 			receiveSocket = new ServerSocket(port);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			System.out.println("No IP");
+		}
 	}
 	
 	TCPManager(int port)
@@ -40,6 +42,8 @@ public class TCPManager {
 	public String receiveMessage()
 	{
 		try {
+			if(receiveSocket.equals(null))
+				receiveSocket = new ServerSocket(port);
 			socket = receiveSocket.accept();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			socket.close();

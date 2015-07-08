@@ -141,7 +141,7 @@ public class GUI {
 	public void watchButtonAction()
 	{
 		udp = new UDPManager(5460);
-		tcp = new TCPManager(5460);
+		tcp = new TCPManager(ipInput.getText() , 5460);
 		tcp.writeMessage(GetExternalIP.getIP());
 		new Thread(new Runnable() {
 			
