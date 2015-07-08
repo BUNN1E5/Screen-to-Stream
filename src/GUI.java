@@ -110,6 +110,7 @@ public class GUI {
 	{
 		udp = new UDPManager(Integer.parseInt(portInput.getText()));
 		tcp = new TCPManager(Integer.parseInt(portInput.getText()));
+		udp.addIP("192.168.0.101");
 		new Thread(new Runnable() {
 			
 			@Override
@@ -129,7 +130,6 @@ public class GUI {
 			public void run() {
 				while(true)
 				{
-					System.out.println("loop");
 					if(!streamButton.isSelected())
 						break;
 					udp.addIP(tcp.receiveMessage());

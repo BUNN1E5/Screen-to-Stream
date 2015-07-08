@@ -31,6 +31,7 @@ public class TCPManager {
 			stream.writeBytes(sendData);
 			socket.close();
 		} catch (IOException e) {
+			e.getStackTrace();
 		}
 	}
 	
