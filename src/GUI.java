@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -105,8 +108,8 @@ public class GUI {
 	TCPManager tcp;
 	public void streamButtonAction()
 	{
-		udp = new UDPManager(5460);
-		tcp = new TCPManager(5460);
+		udp = new UDPManager(Integer.parseInt(portInput.getText()));
+		tcp = new TCPManager(Integer.parseInt(portInput.getText()));
 		new Thread(new Runnable() {
 			
 			@Override
@@ -116,7 +119,6 @@ public class GUI {
 					if(!streamButton.isSelected())
 						break;
 					udp.sendData(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()));
-					frame.toFront();
 				}
 			}
 		}, "Server Thread").start();
@@ -127,12 +129,11 @@ public class GUI {
 			public void run() {
 				while(true)
 				{
+					System.out.println("loop");
 					if(!streamButton.isSelected())
 						break;
-					if(!tcp.receiveMessage().equals(null))
-					{
-						udp.addIP(tcp.receiveMessage());
-					}
+					udp.addIP(tcp.receiveMessage());
+					System.out.println(tcp.receiveMessage());
 				}
 			}
 		}, "Receiving Thread").start();
@@ -140,9 +141,8 @@ public class GUI {
 	
 	public void watchButtonAction()
 	{
-		udp = new UDPManager(5460);
-		tcp = new TCPManager(ipInput.getText() , 5460);
-		tcp.writeMessage(GetExternalIP.getIP());
+		udp = new UDPManager(Integer.parseInt(portInput.getText()));
+		tcp = new TCPManager(ipInput.getText() , Integer.parseInt(portInput.getText()));
 		new Thread(new Runnable() {
 			
 			@Override
@@ -155,8 +155,11 @@ public class GUI {
 						System.gc();
 						break;
 					}
-					picture.setIcon(new ImageIcon(udp.recieveData(350000)));
-					frame.toFront();
+					
+					tcp.writeMessage(GetExternalIP.getIP());
+					BufferedImage image = cap.displayImage(udp.recieveData(350000));
+					frame.setSize(image.getWidth(), image.getHeight() + 33 + menu.getSize().height);
+					picture.setIcon(new ImageIcon(image));
 				}
 			}
 		}, "Server Thread").start();
@@ -210,6 +213,28 @@ public class GUI {
 			
 			@Override
 			public void componentHidden(ComponentEvent e) {
+				
+			}
+		});
+		
+		portInput.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if(e.getKeyChar() < '0' || e.getKeyChar() > '9' || e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
+				{
+					e.consume();
+				}
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
 				
 			}
 		});

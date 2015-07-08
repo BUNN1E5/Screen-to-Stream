@@ -13,11 +13,6 @@ public class TCPManager {
 	{
 		this.port = port;
 		this.IP = IP;
-		try {
-			receiveSocket = new ServerSocket(port);
-		} catch (Exception e) {
-			System.out.println("No IP");
-		}
 	}
 	
 	TCPManager(int port)
