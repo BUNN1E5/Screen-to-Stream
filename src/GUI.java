@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -9,7 +10,11 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -108,19 +113,23 @@ public class GUI {
 	TCPManager tcp;
 	public void streamButtonAction()
 	{
+		picture.setVisible(false);
+		frame.toBack();
+		frame.toFront();
 		udp = new UDPManager(Integer.parseInt(portInput.getText()));
 		tcp = new TCPManager(Integer.parseInt(portInput.getText()));
-		//udp.addIP("174.65.14.152");
-		//udp.addIP("174.68.74.90");
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
+				udp.addIP("174.68.74.90");
+				udp.addIP("174.65.14.152");
 				while(true)
 				{
 					if(!streamButton.isSelected())
 						break;
 					udp.sendData(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()));
+					frame.setAlwaysOnTop(true);
 				}
 			}
 		}, "Server Thread").start();
@@ -134,7 +143,6 @@ public class GUI {
 					if(!streamButton.isSelected())
 						break;
 					udp.addIP(tcp.receiveMessage());
-					System.out.println(tcp.receiveMessage());
 				}
 			}
 		}, "Receiving Thread").start();
@@ -148,12 +156,19 @@ public class GUI {
 			
 			@Override
 			public void run() {
-				tcp.writeMessage(IPManager.getExternalIP());
+				picture.setVisible(true);
+				try {
+					tcp.writeMessage(InetAddress.getLocalHost().getHostAddress());
+					tcp.writeMessage(IPManager.getExternalIP());
+				} catch (UnknownHostException e) {}
 				while(true)
 				{
 					if(!watchButton.isSelected())
 					{
 						System.gc();
+						picture.setVisible(false);
+						frame.toBack();
+						frame.toFront();
 						break;
 					}
 					BufferedImage image = cap.displayImage(udp.recieveData(350000));
@@ -162,6 +177,19 @@ public class GUI {
 				}
 			}
 		}, "Server Thread").start();
+	}
+	
+	void checkSize()
+	{
+		if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length > 350000)
+		{
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.ERROR_DIALOG);
+			//frame.getRootPane().setWindowDecorationStyle();
+		}
+		else if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length < 350000)
+		{
+			frame.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
+		}
 	}
 	
 	public void listenerInit()
@@ -188,32 +216,23 @@ public class GUI {
 			public void componentShown(ComponentEvent e) {
 				menu.setBounds(0, frame.getHeight() - 33 - menu.getSize().height, frame.getWidth(), 20);
 				streamWindow.setBounds(0, 0, frame.getWidth(), frame.getHeight() - 33 - menu.getSize().height);
+				checkSize();
 			}
 			
 			@Override
 			public void componentResized(ComponentEvent e) {
 				menu.setBounds(0, frame.getHeight() - 33 - menu.getSize().height, frame.getWidth(), 20);
 				streamWindow.setBounds(0, 0, frame.getWidth(), frame.getHeight() - 33 - menu.getSize().height);
-				if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length > 350000)
-				{
-					frame.getRootPane().setWindowDecorationStyle(JRootPane.ERROR_DIALOG);
-					//frame.getRootPane().setWindowDecorationStyle();
-				}
-				else if(cap.convertToJPEG(streamWindow.getLocationOnScreen(), streamWindow.getSize()).length < 350000)
-				{
-					frame.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
-				}
-				
+				checkSize();
 			}
 			
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				
+				checkSize();
 			}
 			
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				
 			}
 		});
 		

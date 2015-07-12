@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.*;
 
+import sun.print.resources.serviceui;
+
 
 public class TCPManager {
 	
@@ -30,9 +32,7 @@ public class TCPManager {
 			DataOutputStream stream = new DataOutputStream(socket.getOutputStream());
 			stream.writeBytes(sendData);
 			socket.close();
-		} catch (IOException e) {
-			e.getStackTrace();
-		}
+		} catch (IOException e) {}
 	}
 	
 	public String receiveMessage()
@@ -41,8 +41,11 @@ public class TCPManager {
 			if(receiveSocket.equals(null))
 				receiveSocket = new ServerSocket(port);
 			socket = receiveSocket.accept();
+			//start of added code
+			receiveSocket.setReuseAddress(true);
+			receiveSocket.bind(new InetSocketAddress("localhost", port));
+			//End of added code
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			System.out.println(reader.readLine());
 			return new String(reader.readLine());
 		} catch (Exception e) {
 			return "";
